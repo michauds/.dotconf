@@ -1,3 +1,4 @@
+execute pathogen#infect()
 " See what you're typing
 set showcmd
 
