@@ -14,21 +14,21 @@ if [ -f $HOME/.gitconfig ]
 then
     mv $HOME/.gitconfig $HOME/.gitconfig.vanilla
 fi
-if [ -d $HOME/.vim/autoload ]
-then
-    mv $HOME/.vim/autoload $HOME/.vim/autoload.bak
-fi
 if [ -L $HOME/.vim/autoload ]
 then
     rm $HOME/.vim/autoload
 fi
-if [ -d $HOME/.vim/bundle ]
+if [ -d $HOME/.vim/autoload ]
 then
-    mv $HOME/.vim/bundle $HOME/.vim/bundle.bak
+    mv $HOME/.vim/autoload $HOME/.vim/autoload.bak
 fi
 if [ -L $HOME/.vim/bundle ]
 then
     rm $HOME/.vim/bundle
+fi
+if [ -d $HOME/.vim/bundle ]
+then
+    mv $HOME/.vim/bundle $HOME/.vim/bundle.bak
 fi
 
 # Check if were also install config for awesome wm
@@ -59,3 +59,5 @@ fi
 # my vimrc requires 2 non-standard dirs
 mkdir -p $HOME/.vim/backup
 mkdir -p $HOME/.vim/tmp
+
+git submodule init
