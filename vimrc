@@ -60,3 +60,6 @@ set directory=~/.vim/tmp
 
 " Keep at least 5 lines above/below
 set scrolloff=5
+
+" Open nerdtree with Ctrl+n
+map <C-n> :NERDTreeToggle<CR>
