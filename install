@@ -37,3 +37,7 @@ if [ "$install_awesome" = "Y" ]
 then
     ln rc.lua $awesome_path/rc.lua
 fi
+
+# my vimrc requires 2 non-standard dirs
+mkdir -p $HOME/.vim/backup
+mkdir -p $HOME/.vim/tmp
