@@ -34,8 +34,8 @@ fi
 # Check if were also install config for awesome wm
 if [[ "$*" == "awesome" ]]
 then
-    install_awesome = "Y"
-    awsome_path = $HOME/".config/awesome"
+    install_awesome="Y"
+    awesome_path=$HOME/".config/awesome"
     if [ -f $awesome_path/rc.lua ]
     then
         mv $awesome_path/rc.lua $awesome_path/rc.lua.vanilla
