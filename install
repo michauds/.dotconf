@@ -1,0 +1,39 @@
+#!/bin/bash
+#
+
+# If files already present (quite probable), move them so we can link new ones
+if [ -f $HOME/.vimrc ]
+then
+    mv $HOME/.vimrc $HOME/.vimrc.vanilla
+fi
+if [ -f $HOME/.bashrc ]
+then
+    mv $HOME/.bashrc $HOME/.bashrc.vanilla
+fi
+if [ -f $HOME/.gitconfig ]
+then
+    mv $HOME/.gitconfig $HOME/.gitconfig.vanilla
+fi
+
+# Check if were also install config for awesome wm
+if [[ "$*" == "awesome" ]]
+then
+    install_awesome = "Y"
+    awsome_path = $HOME/".config/awesome"
+    if [ -f $awesome_path/rc.lua ]
+    then
+        mv $awesome_path/rc.lua $awesome_path/rc.lua.vanilla
+    else
+        mkdir -p $awesome_path
+    fi 
+fi 
+
+# Now we're sure the path is clear of naming conflicts
+# we can safely link everything  
+ln bashrc $HOME/.bashrc
+ln vimrc $HOME/.vimrc
+ln gitconfig $HOME/.gitconfig
+if [ "$install_awesome" = "Y" ]
+then
+    ln rc.lua $awesome_path/rc.lua
+fi
