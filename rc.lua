@@ -38,10 +38,9 @@ end
 
 -- {{{ Variable definitions
 -- Themes define colours, icons, and wallpapers
-beautiful.init("/usr/share/awesome/themes/default/theme.lua")
-
+beautiful.init("/home/michauds/.dotconf/awesome/default/theme.lua")
 -- Change wallpaper back to debian default
-theme.wallpaper_cmd = { "awsetbg /usr/share/wallpapers/joy/contents/images/1366x768.png" }
+--theme.wallpaper_cmd = { "awsetbg /usr/share/wallpapers/joy/contents/images/1366x768.png" }
 
 -- This is used later as the default terminal and editor to run.
 terminal = "x-terminal-emulator"
@@ -136,6 +135,7 @@ therm_monitor = widget({ type = "textbox" })
 vicious.register(therm_monitor, vicious.widgets.thermal, "Temp: $1 C", 20, {"coretemp.0", "core"})
 
 -- Battery monitor
+
 battery_monitor = widget({ type = "textbox" })
 function get_battery_status()
     local data = io.popen("acpi | awk '{print $3\" \"$4\" \"$5}'", "r")
@@ -144,28 +144,30 @@ function get_battery_status()
     return line
 end
 battery_monitor.text = "Battery: "..get_battery_status()
-battery_monitor_timer = timer({ timeout = 15 })
+battery_monitor_timer = timer({ timeout = 30 })
 battery_monitor_timer:add_signal("timeout", function()
     battery_monitor.text = "Battery: "..get_battery_status()
 end)
+-- Needed to activate the timer
+battery_monitor_timer:start()
 
 -- Pavel's media widget mod
 volumecfg = {}
-volumecfg.cardid  = 0
+volumecfg.card_id  = "pulse"
 volumecfg.channel = "Master"
 volumecfg.widget = widget({ type = "textbox", name = "volumecfg.widget", align = "right" })
 -- command must start with a space!
 volumecfg.mixercommand = function (command)
-       local fd = io.popen("amixer -c " .. volumecfg.cardid .. command)
+       local fd = io.popen("amixer -D " .. volumecfg.card_id .. command)
        local status = fd:read("*all")
        fd:close()
        local volume = string.match(status, "(%d?%d?%d)%%")
        volume = string.format("% 3d", volume)
        status = string.match(status, "%[(o[^%]]*)%]")
        if string.find(status, "on", 1, true) then
-               volume = volume .. "%"
+               volume = "Vol: " .. volume .. "%"
        else   
-               volume = volume .. "M"
+               volume = "Vol: " .. volume .. "M"
        end
        volumecfg.widget.text = volume
 end
@@ -188,11 +190,11 @@ volumecfg.widget:buttons(awful.util.table.join(
 ))
 volumecfg.update()
 
-
 -- Hook to update UI when changed
 awful.hooks.timer.register(10, function() 
     volumecfg.update()
 end)
+
 
 -- }}}
 
@@ -365,8 +367,25 @@ globalkeys = awful.util.table.join(
                   mypromptbox[mouse.screen].widget,
                   awful.util.eval, nil,
                   awful.util.getdir("cache") .. "/history_eval")
-              end)
+              end),
+-- Define key binding for media keys
+    awful.key({ }, "XF86AudioMute", 
+        function () 
+            volumecfg.toggle()
+        end
+    ),
+    awful.key({ }, "XF86AudioRaiseVolume",
+        function ()
+            volumecfg.up()
+        end
+    ),
+    awful.key({ }, "XF86AudioLowerVolume",
+        function ()
+            volumecfg.down()
+        end
+    )
 )
+
 
 clientkeys = awful.util.table.join(
     awful.key({ modkey,           }, "f",      function (c) c.fullscreen = not c.fullscreen  end),
@@ -489,7 +508,3 @@ client.add_signal("focus", function(c) c.border_color = beautiful.border_focus e
 client.add_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 -- }}}
 
--- Configure media key bindings 
-globalkeys = awful.util.table.join(globalkeys, awful.key({ }, "XF86AudioRaiseVolume", function() volumecfg.up() end))
-globalkeys = awful.util.table.join(globalkeys, awful.key({ }, "XF86AudioLowerVolume", function() volumecfg.down() end))
-globalkeys = awful.util.table.join(globalkeys, awful.key({ }, "XF86AudioMute", function() volumecfg.toggle() end))
