@@ -61,5 +61,10 @@ set directory=~/.vim/tmp
 " Keep at least 5 lines above/below
 set scrolloff=5
 
+" Show all non-printing chars
+set list
+" Tell vi what non-printing chars we want to see
+set listchars=tab:▸-,eol:$,trail:~,nbsp:~
+
 " Open nerdtree with Ctrl+n
 map <C-n> :NERDTreeToggle<CR>
