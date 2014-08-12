@@ -1,3 +1,13 @@
+filetype off
+set rtp+=~/.vim/bundle/Vundle.vim
+
+call vundle#begin()
+
+Bundle 'Valloric/YouCompleteMe'
+Plugin 'bling/vim-airline'
+
+call vundle#end()
+
 execute pathogen#infect()
 " See what you're typing
 set showcmd
@@ -6,8 +16,6 @@ set showcmd
 set showmode
 
 " Syntax highlighting
-filetype on
-filetype plugin on
 filetype plugin indent on
 syntax on
 syntax enable
