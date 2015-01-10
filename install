@@ -1,63 +1,31 @@
 #!/bin/bash
-#
+
 cur_dir=`pwd`
-# If files already present (quite probable), move them so we can link new ones
-if [ -f $HOME/.vimrc ]
-then
-    mv $HOME/.vimrc $HOME/.vimrc.vanilla
-fi
-if [ -f $HOME/.bashrc ]
-then
-    mv $HOME/.bashrc $HOME/.bashrc.vanilla
-fi
-if [ -f $HOME/.gitconfig ]
-then
-    mv $HOME/.gitconfig $HOME/.gitconfig.vanilla
-fi
-if [ -L $HOME/.vim/autoload ]
-then
-    rm $HOME/.vim/autoload
-fi
-if [ -d $HOME/.vim/autoload ]
-then
-    mv $HOME/.vim/autoload $HOME/.vim/autoload.bak
-fi
-if [ -L $HOME/.vim/bundle ]
-then
-    rm $HOME/.vim/bundle
-fi
-if [ -d $HOME/.vim/bundle ]
-then
-    mv $HOME/.vim/bundle $HOME/.vim/bundle.bak
-fi
+[ -d $HOME/.vim/bundle/Vundle.vim ] || git clone https://github.com/gmarik/Vundle.vim.git $HOME/.vim/bundle/Vundle.vim
 
 # Check if were also install config for awesome wm
-if [[ "$*" == "awesome" ]]
-then
-    install_awesome="Y"
-    awesome_path=$HOME/".config/awesome"
-    if [ -f $awesome_path/rc.lua ]
-    then
-        mv $awesome_path/rc.lua $awesome_path/rc.lua.vanilla
-    else
-        mkdir -p $awesome_path
-    fi 
-fi 
-
-# Now we're sure the path is clear of naming conflicts
-# we can safely link everything  
-ln bashrc $HOME/.bashrc
-ln vimrc $HOME/.vimrc
-ln gitconfig $HOME/.gitconfig
-ln -s $cur_dir/vim/autoload $HOME/.vim/autoload
-ln -s $cur_dir/vim/bundle $HOME/.vim/bundle
+#if [[ "$*" == "awesome" ]]
+#then
+#    install_awesome="Y"
+#    awesome_path=$HOME/".config/awesome"
+#    if [ -f $awesome_path/rc.lua ]
+#    then
+#        mv $awesome_path/rc.lua $awesome_path/rc.lua.vanilla
+#    else
+#        mkdir -p $awesome_path
+#    fi
+#fi
+ln --backup=numbered -s $cur_dir/bashrc $HOME/.bashrc
+ln --backup=numbered -s $cur_dir/vimrc $HOME/.vimrc
+ln --backup=numbered -s $cur_dir/gitconfig $HOME/.gitconfig
 
 if [ "$install_awesome" = "Y" ]
 then
-    ln rc.lua $awesome_path/rc.lua
+    ln -s rc.lua $awesome_path/rc.lua
 fi
-# my vimrc requires 2 non-standard dirs
-mkdir -p $HOME/.vim/backup
-mkdir -p $HOME/.vim/tmp
 
-git submodule init
+# my vimrc requires 2 non-standard dirs
+[ -d $HOME/.vim/backup ] || mkdir -p $HOME/.vim/backup
+[ -d $HOME/.vim/tmp ] || mkdir -p $HOME/.vim/tmp
+
+vim +PluginInstall +qall
